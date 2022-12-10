@@ -30,7 +30,7 @@ async def application(scope, receive, send):
 
 ## HTTP
 
-HTTP Connection Scope
+### HTTP Connection Scope
 - `type`: `http`
 - `http_version`: "1.0", "1.1" or "2"
 - `method`: The HTTP method name, uppercased.
@@ -40,27 +40,27 @@ HTTP Connection Scope
 - `headers`:
 - ...
 
-Request - `receive` event
+### Request - `receive` event
 - `type`: `http.request`
 - `body`: byte string
 - `more_body`: bool, True表示body没发完，应用需要等到False为止
 
-Response Start - `send` event
+### Response Start - `send` event
 - `type`: `http.response.start`
 - `status`: int, HTTP status code
 - `headers`: Iterable[[byte string, byte string]]
 
-Response Body - `send` event
+### Response Body - `send` event
 - `type`: `http.response.body`
 - `body`: byte string
 - `more_body`: bool, True表示body没发完，服务器需要等到False为止
 
-Disconnect - `receive` event
+### Disconnect - `receive` event
 - `type`: `http.disconnect`
 
 ## WebSocket
 
-Websocket Connection Scope
+### Websocket Connection Scope
 - `type`: `websocket`
 - `http_version`: "1.1" or "2"
 - `scheme`: "ws" or "wss"
@@ -69,31 +69,31 @@ Websocket Connection Scope
 - `headers`:
 - ...
 
-Connect - `receive` event  
+### Connect - `receive` event
 握手，应用在接受 `websocket.receive` 消息之前必须响应 Accept 或 Close 消息，否则403
 - `type`: `websocket.connect`
 
-Accept - `send` event
+### Accept - `send` event
 - `type`: `websocket.accept`
 - `headers`
 
-Receive - `receive` event  
+### Receive - `receive` event
 `bytes` 和 `text` 至少有一个不为空
 - `type`: `websocket.receive`
 - `bytes`: byte string
 - `text`: Unicode string
 
-Send - `send` event  
+### Send - `send` event
 `bytes` 和 `text` 至少有一个不为空
 - `type`: `websocket.send`
 - `bytes`: byte string
 - `text`: Unicode string
 
-Disconnect - `receive` event
+### Disconnect - `receive` event
 - `type`: `websocket.disconnect`
 - `code`: int, The WebSocket close code, 默认1005
 
-Close - `send` event  
+### Close - `send` event
 如果是在握手阶段，发送，则为403
 - `type`: `websocket.close`
 - `code`: int, The WebSocket close code, 默认1000
