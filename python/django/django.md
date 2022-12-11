@@ -84,12 +84,6 @@ Session 是后端存储，默认是DB，模型为键值模型，值是dict
     不过问题是使用场景是什么呢？何时给 `request.META["REMOTE_USER"]` 赋值呢？  
     恐怕还需要在 `RemoteUserMiddleware` 前面在写一个自定义的 middleware，远程认证后赋值
 
-DRF 主要是用 http header 认证的，主要配置为 `DEFAULT_AUTHENTICATION_CLASSES`
-- `rest_framework.authentication.BasicAuthentication` 用 basic header 进行认证
-- `rest_framework.authentication.SessionAuthentication` 用 Django session 进行认证
-- `rest_framework.authentication.TokenAuthentication` 根据 token header进行认证
-- `rest_framework.authentication.RemoteUserAuthentication`
-
 ### Permission (Model & Object)
 
 auth app 的 `ready()` 初始化时，会监听 `post_migrate` 信号，只要监测到新 model 就自动创建4个默认权限
@@ -100,21 +94,14 @@ auth app 的 `ready()` 初始化时，会监听 `post_migrate` 信号，只要�
 '%(app_label)s.delete_%(model_name)s'
 ```
 
+Django 的接口留有对象级权限的参数，但自己并没有实现，只有 Model级权限校验
+
 权限只是一条数据，在view试图中显式对请求进行验证才有实际价值  
 检查权限的方法是调用Django的方法 `user.has_perm(perm, obj=None)`  
 里面又会去遍历 `AUTHENTICATION_BACKENDS` 的认证后端检查权限，比如下面两个
 - `django.contrib.auth.backends.ModelBackend` 不检查obj，如果传递了obj，就返回False，跳过权限检查
 - `guardian.backends.ObjectPermissionBackend` 如果没有传递 obj，就返回False，跳过权限检查
 - 如果报 `PermissionDenied`，明确表示没有权限
-
-DRF 可以用默认的 `DEFAULT_PERMISSION_CLASSES`，也可在View类局部中指定
-- `AllowAny`: 允许任何请求
-- `IsAuthenticated`: 需要通过认证
-- `IsAuthenticatedOrReadOnly`: GET请求可匿名
-- `IsAdminUser`: 需要是django职员，`is_staff`
-- `DjangoModelPermissions`: Model级权限，不支持action接口自定义权限
-- `DjangoObjectPermissions`: Object级权限，包含Model级权限，不支持action接口自定义权限  
-  DRF这两个权限类只是封装，最终是Django `AUTHENTICATION_BACKENDS` 认证后端完成的
 
 ### guardian对象权限是否依赖Model权限？
 
