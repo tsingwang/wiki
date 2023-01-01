@@ -1,6 +1,6 @@
 # Redis 数据结构
 
-## SDS (Simple Dynamic String)
+## SDS (Simple Dynamic String) sds.c
 
 ```
 +--------+-------------------------------+-----------+
@@ -11,20 +11,21 @@
 ```
 
 `sds` 是指向 sdshdr `buf`(实际字符串) 的指针，不是header的位置  
-为了节约内存，有几种不同大小的 sdshdr，sds 指针前一个字节 `flags` 指定了是哪种类型
+为了节约内存，有几种不同大小的 sdshdr，sds 指针前一个字节 `flags` 指定了是哪种类型  
+细节: 这里结构体使用了 `__attribute__ ((__packed__))`，表示按1字节对齐，这样buf[-1]就可以找到flags
 
 - `sdshdr5` 最特殊的一个，只能存储小于32字节长度的字符串，`flags` 的低3位存储类型，高5位存储长度
 - `sdshdr8` 等，`flags` 的低3位存储类型，高5位不使用
   - `len`: 当前字符串长度，不包含结尾'\0'
   - `alloc`: 当前分配的可用字符串长度，不包含header和结尾'\0'
 
-## list (双向链表)
+## list (双向链表) adlist.c
 
 - `list` 通用的双向链表，无环，adlist
 - `listNode` 链表中一个节点
 - `listIter` 正向或反向的list迭代器
 
-## dict 字典(Hash Table)
+## dict 字典(Hash Table) dict.c
 
 - `dict` 哈希表
   ```c
@@ -62,3 +63,29 @@
 - 正在rehash时查询，两个表都要查
 - 每个元素迁移只是改变指针而已，不需要重新分配内存，rehash性能是很高的
 - 最后迁移完，把 [1] 赋值给 [0]，并重置[1]
+
+## 跳跃表 t_zset.c
+
+用于有序集合，实现比红黑树简单，同时效率为 O(logN)  
+节点的层高是在插入节点时候确定的，并且是随机生成的 `zslRandomLevel()`，今后也不会再改  
+理解起来还是有难度的
+
+```c
+typedef struct zskiplistNode {
+    sds ele;
+    double score;
+    struct zskiplistNode *backward;   /* 后退指针，只能指向当前节点最底层的前一个节点 */
+    struct zskiplistLevel {
+        struct zskiplistNode *forward;  /* 指向本层下一个节点 */
+        unsigned long span;   /* forward指向的节点与本节点之间的元素个数 */
+    } level[];
+} zskiplistNode;
+
+typedef struct zskiplist {
+    /* header: 跳跃表的一个特殊节点，它的level数组元素个数为32，不存数据，也不计入跳跃表的总长度 */
+    /* tail: 指向跳跃表尾节点 */
+    struct zskiplistNode *header, *tail;
+    unsigned long length;   /* 跳跃表长度，除头节点之外的节点总数 */
+    int level;  /* 跳跃表的高度 */
+} zskiplist;
+```
