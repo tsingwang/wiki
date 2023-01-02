@@ -66,7 +66,7 @@
 
 ## 跳跃表 t_zset.c
 
-用于有序集合，实现比红黑树简单，同时效率为 O(logN)  
+用于有序集合，实现比红黑树简单，同时查询、插入、删除的平均复杂度为 O(logN)  
 节点的层高是在插入节点时候确定的，并且是随机生成的 `zslRandomLevel()`，今后也不会再改  
 理解起来还是有难度的
 
@@ -89,3 +89,29 @@ typedef struct zskiplist {
     int level;  /* 跳跃表的高度 */
 } zskiplist;
 ```
+
+## 压缩列表 ziplist.c
+
+压缩列表ziplist本质上是一个字节数组
+```
+<zlbytes> <zltail> <zllen> <entry> <entry> ... <entry> <zlend>
+```
+
+- `zlbytes` 压缩列表的字节长度，占4个字节
+- `zltail` 尾元素相对于压缩列表起始地址的偏移量，占4个字节
+- `zllen` 元素个数，占2个字节
+- `zlend` 压缩列表的结尾，占1个字节，恒为0xFF
+- 每个 entry 由 `<prevlen> <encoding> <entry-data>` 组成
+
+目的只是为了节省内存？
+
+## 整数集合 intset.c
+
+当集合元素都是整型并且元素不多时使用intset保存，并且元素按从小到大顺序
+
+## quicklist.c
+
+quicklist是一个双向链表，链表中的每个节点是一个ziplist结构。  
+quicklist可以看成是用双向链表将若干小型的ziplist连接到一起的一种数据结构。  
+当ziplist节点个数过多，quicklist退化为双向链表，极端情况就是每个ziplist节点只包含一个entry，即只有一个元素。  
+当ziplist节点个数过少，quicklist退化为ziplist，极端情况就是quicklist中只有一个ziplist节点。
