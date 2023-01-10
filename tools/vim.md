@@ -1,5 +1,6 @@
 - Vim doc 是最好的学习资料，`:tab help`
 - Vim 严重依赖 Ctrl键，普通键盘小拇指会很吃力，可以用 CapsLock 代替
+- [.vimrc配置文件](https://github.com/tsingwang/script/blob/main/vim/vimrc)
 
 # 移动光标
 ```
@@ -190,8 +191,21 @@ CTRL-X CTRL-F   Completing file name
 CTRL-X CTRL-O   Omni completion, "p->" completing the items in "struct"
 ```
 
+# 跳转
+```
+gf          Goto file under the cursor
+gd          Goto local Declaration
+gD          Goto global Declaration
+CTRL-O      Jump to older position
+CTRL-I      Jump to newer position
+:jumps      可以查看 jumplist
+```
+
 # tags
 Tag is a location where an identifier is defined in "tags" file.
+
+Tag stack and jumplist are different list in vim, but they might have same items
+when you jumping through tags (eg. using CTRL-])
 
 `ctags` is a separate program. Universal ctags
 ```
@@ -199,9 +213,6 @@ CTRL-]      Jump to a subject under the cursor
 CTRL-W ]    Jump to a subject under the cursor in a split window
 CTRL-W }    Preview
 CTRL-T      Jump back
-CTRL-O      Jump to older position
-CTRL-I      Jump to newer position
-``          Jump back and forth between two points
 
 :set tags=~/prog/tags       Tell Vim where your tags file is
 :tag func_name  Jump to function definition even if it is in another file
@@ -226,8 +237,10 @@ CTRL-I      Jump to newer position
 # map
 A mapping enables you to bind a set of Vim commands to a single key.
 ```
-:map      定义普通模式下的键映射
-:imap     定义插入模式下的键映射
-:noremap  避免值嵌套映射或递归映射
+:map      普通/visual模式下的键映射
+:nmap     普通模式下的键映射
+:imap     插入模式下的键映射
+:noremap  普通/visual模式下，避免值嵌套映射或递归映射
+:nnoremap 普通模式下的
 :inoremap 插入模式下的
 ```
