@@ -6,6 +6,7 @@
 # Index
 
 - Redis
+  - [Redis核心&事件循环](redis/redis-core.md)
   - [Redis数据结构](redis/redis-data-structure.md)
 - Python
   - [WSGI](python/WSGI.md)
