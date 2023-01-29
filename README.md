@@ -8,6 +8,8 @@
 - Redis
   - [Redis核心&事件循环](redis/redis-core.md)
   - [Redis数据结构](redis/redis-data-structure.md)
+  - [Redis数据类型](redis/redis-data-type.md)
+  - [Redis使用场景](redis/redis-usage-scenario.md)
 - Python
   - [WSGI](python/WSGI.md)
   - [ASGI](python/ASGI.md)
