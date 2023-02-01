@@ -34,10 +34,10 @@ main
     aeCreateTimeEvent(serverCron)   定时任务事件回调
       clientsCron     处理客户端日常工作，比如超时清理, server.clients
       databasesCron   key过期、渐进式rehash等
+      rdbSaveBackground
       rewriteAppendOnlyFileBackground
       replicationCron
       clusterCron
-      rdbSaveBackground
       modulesCron
     createSocketAcceptHandler(acceptTcpHandler)   接收新连接
   loadDataFromDisk
