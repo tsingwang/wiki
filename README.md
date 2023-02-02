@@ -22,3 +22,4 @@
   - [响应式原理](vue/reactivity.js)
 - Tools
   - [Vim](tools/vim.md)
+  - [GDB](tools/gdb.md)
