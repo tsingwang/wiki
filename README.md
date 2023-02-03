@@ -1,12 +1,9 @@
-# Purpose
-
-主要用于存放个人技术笔记，也有知识分享的目的。  
-若文中有疑问，欢迎通过 `Discussions` 来交流讨论。
-
 # Index
 
 - Network Protocol
-  - [链路层](protocol/link.md)
+  - [网络层-ICMP](protocol/ICMP.md)
+  - [网络层-IP](protocol/IP.md)
+  - [链路层&ARP](protocol/link.md)
 - Redis
   - [Redis核心&事件循环](redis/redis-core.md)
   - [Redis数据结构](redis/redis-data-structure.md)
