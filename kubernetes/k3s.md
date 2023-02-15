@@ -34,8 +34,3 @@ K3s 默认以 flannel 作为 CNI 运行，使用 VXLAN 作为默认后端
 其他默认安装的组件
 - CoreDNS
 - Traefik Ingress
-
-## 存储
-
-- K3s 默认使用 local-path-provisioner，功能比较弱，单节点玩玩了，也不支持容量限制
-- 可选 longhorn 分布式块存储系统
