@@ -7,7 +7,7 @@
   - [网络层-IP](protocol/IP.md)
   - [链路层&ARP](protocol/link.md)
 - Kubernetes
-  - [k3s](kubernetes/k3s.md)
+  - [storage](kubernetes/storage)
 - Redis
   - [Redis核心&事件循环](redis/redis-core.md)
   - [Redis数据结构](redis/redis-data-structure.md)
