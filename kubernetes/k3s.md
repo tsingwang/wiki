@@ -34,3 +34,10 @@ K3s 默认以 flannel 作为 CNI 运行，使用 VXLAN 作为默认后端
 其他默认安装的组件
 - CoreDNS
 - Traefik Ingress
+
+k8s默认是没有LB实现的，k3s提供了一个LB的实现 https://github.com/k3s-io/klipper-lb  
+控制器代码没有独立出来，在k3s项目里面 https://github.com/k3s-io/k3s/blob/master/pkg/cloudprovider/servicelb.go  
+控制器会监视 LoadBalancer 类型的 Service，对于每个 LoadBalancer Service，会在 kube-system 命名空间中会创建一个 DaemonSet。  
+这个 DaemonSet 在每个节点上创建带有 svc- 前缀的 Pod。  
+这些 Pod 使用 iptables 将流量从 Pod 的 `NodePort` 转发到 Service 的 `ClusterIP` 地址和端口。  
+用的NodePort，并没有外部IP池，所以简单
