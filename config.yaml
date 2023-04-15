@@ -9,11 +9,11 @@ disablePathToLower: true
 enableGitInfo: true
 
 menu:
-  # before: []
-  after:
+  before:
     - name: "Blog"
       url: "https://tsingwang.github.io"
       weight: 10
+  # after: []
 
 params:
   # (Optional, default light) Sets color theme: light, dark or auto.
