@@ -13,6 +13,8 @@ WSGI 只是接口定义，一边连着web服务器(nginx)，另一边连着用�
 WSGI 一层可以换成任意遵循 WSGI 的程序，比如常见的 Gunicorn、uWSGI。  
 WSGI 从 webserver 获得 request，封装好，传给WSGI应用执行，返回response。
 
+目的是让Python开发者专注开发应用，而不用关心TCP连接、HTTP原始请求响应格式等底层。
+
 ## WSGI 接口定义
 
 1. 接收两个参数:
@@ -44,8 +46,7 @@ def application (
 
     # Return the response body. Notice it is wrapped
     # in a list although it could be any iterable.
-    #return [response_body]
-    # python3 need convert to bytes
+    # NOTE(tsing): python3 need convert to bytes
     return [response_body.encode()]
 
 if __name__ == '__main__':

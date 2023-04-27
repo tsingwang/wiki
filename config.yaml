@@ -1,4 +1,5 @@
 baseURL: https://tsingwang.github.io/wiki/
+googleAnalytics: G-S6RJ272SMM
 title: Tsing's Notebook
 theme: hugo-book
 enableRobotsTXT: true
