@@ -6,8 +6,10 @@ bookToc: false
 
 # Gunicorn
 
+- https://github.com/benoitc/gunicorn
+- 纯Python实现的 WSGI HTTP Server，6k+ 行代码(剔除注释和空行)
+- 当前版本 20.1.0，只支持 WSGI，不支持 ASGI
 - Master/Worker 多进程架构
-- 当前版本 20.1.0，只支持 WSGI
 
 ## Master 进程
 
@@ -37,6 +39,6 @@ Arbiter(self).run()       self 为 Application 实例
 - `fork` 出来的worker子进程，执行 `worker.init_process()`，最终执行 `run()` 各自实现的 loop 循环
 - 默认为 `SyncWorker`，用的 `select` 模型，`accept` 处理一个请求
 - `Request` 解析原始 HTTP 请求
-- `wsgi.create` 创建 WSGI 需要的 `environ` 和 `Response`
+- `wsgi.create` 创建 WSGI 协议需要的 `environ` 和 `Response`
 - `self.wsgi(environ, resp.start_response)` 调用用户的 app
 

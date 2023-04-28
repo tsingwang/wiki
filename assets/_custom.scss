@@ -4,4 +4,31 @@ html {
 
 body {
   font-family: verdana, helvetica, arial, sans-serif;
+  background: #eeeeee;
+}
+
+.book-menu {
+  font-size: 0.95rem;
+
+  .book-menu-content {
+    background: #e2e2e2;
+  }
+
+  a.active {
+    font-weight: bold;
+  }
+}
+
+.book-toc {
+  font-size: 0.95rem;
+  background: #e8e8e8;
+}
+
+.markdown {
+  code {
+    background: #e2e2e2;
+  }
+  pre {
+    background: #e2e2e2;
+  }
 }

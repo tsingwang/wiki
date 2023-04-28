@@ -1,6 +1,7 @@
 ---
 title: WSGI
 weight: 1
+bookToc: false
 ---
 
 # WSGI (Web Server Gateway Interface)
