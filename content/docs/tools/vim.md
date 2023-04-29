@@ -7,9 +7,10 @@ weight: 10
 
 - Vim doc 是最好的学习资料，`:tab help`
 - Vim 严重依赖 Ctrl键，普通键盘小拇指会很吃力，可以用 CapsLock 代替
-- [.vimrc配置文件](https://github.com/tsingwang/script/blob/main/vim/vimrc)
+- [.vimrc配置文件](https://github.com/tsingwang/toolbox/blob/main/vim/vimrc)
 
-# 移动光标
+## 移动光标
+
 ```
 hjkl        Left Down Up Right
 
@@ -46,7 +47,8 @@ CTRL-B      Scroll backward by a whole screen
 zz          让光标所在行处于屏幕中间
 ```
 
-# 搜索
+## 搜索
+
 ```
 /word       Search forward
 ?word       Search backward
@@ -55,7 +57,8 @@ zz          让光标所在行处于屏幕中间
             Repeat the search with "n", "N" for opposite direction.
 ```
 
-# 编辑
+## 编辑
+
 ```
 i           Insert text before the cursor
 I           Insert text before the first non-blank in the line
@@ -92,7 +95,8 @@ CTRL-R      Redo change which was undone
 .           Repeat the last change
 ```
 
-# Visual mode
+## Visual mode
+
 ```
 v           Visual mode
 V           Visual mode, work on whole lines
@@ -100,7 +104,7 @@ CTRL-V      Visual block mode, work on a rectangular block of characters
 ```
 In Visual mode, if you need to change the other end of the selection, use the `o`
 
-In Visual block mode, "I{string}<Esc>" insert the text {string} in each line.
+In Visual block mode, `I{string}<Esc>` insert the text {string} in each line.
 
 you can also do:
 ```
@@ -112,7 +116,8 @@ you can also do:
     =           auto indent
 ```
 
-# 分屏
+## 分屏
+
 ```
 :split          Split itself
 :split file     Split another file
@@ -137,7 +142,8 @@ gt              Goto Tab, switch tab page
 :tabonly        Close all tab pages except the current one
 ```
 
-# 替换
+## 替换
+
 ```
 :[range]substitute/from/to/[flag]   Change "from" string to "to" string
 :s                  Work on current line
@@ -149,7 +155,8 @@ gt              Goto Tab, switch tab page
 :.,.+4s/from/to/g   == :1,5s/from/to/g
 ```
 
-# 其他
+## 其他
+
 ```
 CTRL-Z      Suspend Vim and back to the shell
 fg          Back to Vim
@@ -159,8 +166,9 @@ fg          Back to Vim
 K       Run the external "man" program to lookup the keyword under the cursor
 ```
 
-# 复制粘贴
-需要装 gvim，默认使用匿名寄存器 ""
+## 复制粘贴
+
+需要装 gvim，默认使用匿名寄存器 `""`
 ```
 "+yy    Copy a line to the clipboard
 "+p     Paste from the clipboard
@@ -169,27 +177,31 @@ K       Run the external "man" program to lookup the keyword under the cursor
         通过它们可以和其他程序进行数据交换
 ```
 
-# Tab 替换成空格
+## Tab 替换成空格
+
 ```
 :set expandtab
 :%retab!
 ```
-加!是用于处理非空白字符之后的TAB，即所有的TAB，若不加!，则只处理行首的TAB
+加 `!` 是用于处理非空白字符之后的TAB，即所有的TAB，若不加 `!`，则只处理行首的TAB
 
-# 格式转换
+## 格式转换
+
 line-break problem, Change the file format to unix,dos,mac
 ```
 :set fileformat=unix
 :w
 ```
 
-# 去掉所有多余的^M
+## 去掉所有多余的^M
+
 ```
 :%s/[ctrl-v][ctrl-m]//g
 ```
-中间CTRL部分不是输入，而是按键，显示 :%s/^M//g
+中间CTRL部分不是输入，而是按键，显示 `:%s/^M//g`
 
-# 补全
+## 补全
+
 In Insert mode
 ```
 CTRL-N          Completion, Search for a word after the cursor
@@ -198,7 +210,8 @@ CTRL-X CTRL-F   Completing file name
 CTRL-X CTRL-O   Omni completion, "p->" completing the items in "struct"
 ```
 
-# 跳转
+## 跳转
+
 ```
 gf          Goto file under the cursor
 gd          Goto local Declaration
@@ -208,11 +221,12 @@ CTRL-I      Jump to newer position
 :jumps      可以查看 jumplist
 ```
 
-# tags
+## tags
+
 Tag is a location where an identifier is defined in "tags" file.
 
 Tag stack and jumplist are different list in vim, but they might have same items
-when you jumping through tags (eg. using CTRL-])
+when you jumping through tags (eg. using `CTRL-]`)
 
 `ctags` is a separate program. Universal ctags
 ```
@@ -231,7 +245,8 @@ CTRL-T      Jump back
 :tselect tagname
 ```
 
-# Compiling
+## Compiling
+
 ```
 :make {args}    the name of the program is defined by the 'makeprg' option
 :cn         Go to where the next error occurs
@@ -241,7 +256,8 @@ CTRL-T      Jump back
 :cw         如果有错误列表，则打开quickfix窗口
 ```
 
-# map
+## map
+
 A mapping enables you to bind a set of Vim commands to a single key.
 ```
 :map      普通/visual模式下的键映射
