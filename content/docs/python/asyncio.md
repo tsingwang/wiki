@@ -86,7 +86,7 @@ Python3.5中对协程提供了更直接的支持，引入了async/await关键字
 - `await`: 执行遇到await，会在异步任务开始执行之后，暂停当前 async 函数的执行，
   把执行权交给事件循环，让其他 async 函数执行，等待下次被唤醒
 
-## event loop
+## Event Loop
 
 asyncio 在单线程上启动一个事件循环(event loop)，时刻监听新进入循环的事件，加以处理，并不断重复这个过程，直到异步任务结束。
 
@@ -106,6 +106,27 @@ async def main():
 
 asyncio.run(main())
 ```
+
+### 底层 loop
+
+- `asyncio.get_running_loop()` 获取当前线程正在使用的loop对象
+- `asyncio.get_event_loop()` 获取当前正在使用的loop对象。
+  如果当前线程还没有loop对象，那么就会创建一个新的loop对象，并使用 `asyncio.set_event_loop(loop)` 方法设置到当前线程中
+- `asyncio.new_event_loop()` 创建一个新的loop对象
+- `asyncio.set_event_loop(loop)` 将loop设置成系统线程使用的对象
+
+- `loop.run_until_complete(future)` future对象执行完成才返回
+- `loop.run_forever()` 一直运行，直到调用了loop.stop()方法
+- `loop.stop()` 停止loop对象
+- `loop.is_running()` 判断loop是否正在运行
+- `loop.is_closed()` 判断loop是否关闭
+- `loop.close()` 关闭loop对象
+
+- `loop.call_soon(callback, *args, context=None)` 在事件循环的下一次迭代中执行callback方法，args是方法中的参数
+- `loop.call_soon_threadsafe(callback, *args, context=None)` 线程安全的call_soon()
+- `loop.call_later(delay, callback, *args, context=None)` 延迟delay秒后执行
+- `loop.call_at(when, callback, *args, context=None)` 在指定时间点执行
+- `loop.time()` 返回当前时间
 
 ## Task
 
