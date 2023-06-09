@@ -604,3 +604,146 @@ System V IPC 是首先在 System V 中被广泛使用的三种 IPC 机制的名�
 最好避免使用 System V 消息队列。
 
 ## 第 47 章 System V 信号量
+
+TODO: 不太理解，相比 mutex，可以有多个并发存在，但多个并发如何处理竞争问题呢？
+
+## 第 48 章 System V 共享内存
+
+共享内存允许两个或多个进程共享内存的同一个分页。
+由于一个共享内存段会成为一个进程用户空间内存的一部分，因此这种 IPC 机制无需内核介入。
+所有需要做的就是让一个进程将数据复制进共享内存中，并且这部分数据会对其他所有共享同一个段的进程可用。
+与管道或消息队列要求发送进程将数据从用户空间的缓冲区复制进内核内存和接收进程将数据从内核内存复制进用户空间的缓冲区的做法相比，这种 IPC 技术的速度更快。
+
+## 第 49 章 内存映射
+
+`mmap()` 系统调用在调用进程的虚拟地址空间中创建一个新内存映射。
+
+映射分为两种：基于文件的映射和匿名映射。
+文件映射将一个文件区域中的内容映射到进程的虚拟地址空间中。
+匿名映射并没有对应的文件区域，该映射中的字节会被初始化为 0。
+
+## 第 51 章 POSIX IPC 介绍
+
+POSIX IPC 提供的接口在很多方面都优于 System V IPC 接口。
+
+## 第 56 章 SOCKET：介绍
+
+### 56.1 概述
+- 三种 socket domain：AF_UNIX(只可本机通信)、AF_INET(ipv4)、AF_INET6(ipv6)
+- 两种 socket 类型：SOCK_STREAM(TCP)、SOCK_DGRAM(UDP)
+
+### 56.2 创建一个 socket：socket()
+
+`int socket(int domain, int type, int protocol);`
+返回新创建的 socket 的文件描述符
+
+### 56.3 将 socket 绑定到地址：bind()
+
+`bind()` 系统调用将一个 socket 绑定到一个地址上。
+通常，服务器需要使用这个调用来将其 socket 绑定到一个众所周知的地址上使得客户端能够定位到该 socket 上。
+
+`int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);`
+- sockfd 参数是在上一个 socket() 调用中获得的文件描述符。
+- addr 参数是一个指针，它指向了一个指定该 socket 绑定到的地址的结构。
+  传入这个参数的结构的类型取决于 socket domain。
+- addrlen 参数指定了地址结构的大小。
+
+### 56.5 TCP socket
+
+`int listen(int sockfd, int backlog);`
+允许一个流 socket 接受来自其他 socket 的接入连接。
+
+`int accept(int sockfd, struct sockaddr *addr, socklen_t addrlen);`
+在一个监听流 socket 上接受来自一个对等应用程序的连接，并返回对等 socket 的地址(通过addr返回)。
+
+`int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);`
+客户端建立与服务端 socket 之间的连接。
+
+`close()` 连接终止
+
+### 56.6 UDP socket
+
+`recvfrom()` 和 `sendto()` 系统调用在一个数据报 socket 上接收和发送数据报。
+
+## 第 57 章 SOCKET：UNIX DOMAIN
+
+拥有 socket 文件的写和执行权限的进程才能够与这个 socket 进行通信。
+
+## 第 59 章 SOCKET：Internet Domain
+
+## 第 60 章 SOCKET：服务器设计
+
+两种常见的设计方式
+- 迭代型：每次只处理一个客户端，只有当完全处理完一个客户端的请求后才去处理下一个客户端。
+- 并发型：能够同时处理多个客户端的请求。服务器主进程的主要任务就是为每个新的客户端连接创建一个新的子进程(线程)。
+
+优化方案
+- 在服务器上预先创建进程或线程，在处理完客户端请求后，子进程并不终止，而是获取下一个待处理的客户端继续处理
+- 在单个进程中处理多个客户端，采用一种能允许单个进程同时监视多个文件描述符上 I/O 事件的 I/O 模型
+
+### 60.5 inetd（Internet 超级服务器）守护进程
+
+守护进程 inetd 可以监视多个套接字，并启动合适的服务器进程作为到来的 UDP 数据报或 TCP 连接的响应。
+通过使用 inetd，可以将运行在系统上的网络服务进程的数量降到最小，从而降低系统的整体负载。
+
+## 第 61 章 SOCKET：高级主题
+
+### 61.4 sendfile()系统调用
+
+```c
+while ((n = read(diskfilefd, buf, BUZ_SIZE)) > 0)
+    write(sockfd, buf, n)
+```
+这种方式不高效，原因是 `read()` 将文件内容从内核缓冲区拷贝到用户空间，`write()` 将用户空间缓冲区拷贝回socket发送缓冲区内核空间
+当应用程序调用 `sendfile()` 时，文件内容会直接传送到套接字上，而不会经过用户空间。
+这种技术被称为零拷贝传输（zero-copy transfer）。
+
+### 61.6 深入探讨 TCP 协议
+
+## 第 63 章 其他备选的 I/O 模型
+
+### 63.2 I/O 多路复用
+
+I/O 多路复用允许我们同时检查多个文件描述符，看其中任意一个是否可执行 I/O 操作。
+
+系统调用 `select()` 会一直阻塞，直到一个或多个文件描述符集合成为就绪态。
+
+```c
+int select(int nfds, fd_set *restrict readfds, fd_set *restrict writefds,
+           fd_set *restrict errorfds, struct timeval *restrict timeout);
+```
+- readfds 是用来检测输入是否就绪的文件描述符集合。
+- writefds 是用来检测输出是否就绪的文件描述符集合。
+- errorfds 是用来检测异常情况是否发生的文件描述符集合。
+- timeout 该参数可指定为 NULL，此时 select() 会一直阻塞
+
+关于文件描述符集合的操作都是通过四个宏来完成的：
+- `FD_ZERO()` 将 fdset 所指向的集合初始化为空。
+- `FD_SET()` 将文件描述符 fd 添加到由 fdset 所指向的集合中。
+- `FD_CLR()` 将文件描述符 fd 从 fdset 所指向的集合中移除。
+- `FD_ISSET()` 如果文件描述符 fd 是 fdset 所指向的集合中的成员，返回 true。
+
+`select()` 返回所有在 3 个集合中被标记为就绪态的文件描述符总数。
+后续正常流程每个返回的文件描述符集合都需要检查（通过 FD_ISSET()），以此找出发生的 I/O 事件是什么。
+
+系统调用 `poll()` 执行的任务同 `select()` 很相似。
+两者间主要的区别在于我们要如何指定待检查的文件描述符。
+
+性能问题
+- 每次调用 select()或 poll()，内核都必须检查所有被指定的文件描述符，看它们是否处于就绪态。
+- select()或 poll()调用完成后，程序必须检查返回的数据结构中的每个元素，以此查明哪个文件描述符处于就绪态了。
+
+### 63.3 信号驱动 I/O
+
+在信号驱动 I/O 中，当文件描述符上可执行 I/O 操作时，进程请求内核为自己发送一个信号。
+默认情况下，这个通知信号为 SIGIO。
+
+### 63.4 epoll 编程接口
+
+- 系统调用 `epoll_create()` 创建了一个新的 epoll 实例，其对应的兴趣列表初始化为空。
+- 系统调用 `epoll_ctl()` 能够修改由文件描述符 epfd 所代表的 epoll 实例中的兴趣列表。
+  可以增加新的描述符到列表中，将已有的文件描述符从该列表中移除，以及修改代表文件描述符上事件类型的位掩码。
+- 系统调用 `epoll_wait()` 返回 epoll 实例中处于就绪态的文件描述符信息。
+  单个 epoll_wait() 调用能返回多个就绪态文件描述符的信息。
+
+TODO: epoll 到底靠什么提升了性能
