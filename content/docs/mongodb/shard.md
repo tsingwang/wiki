@@ -141,19 +141,33 @@ sh.shardCollection("<database>.<collection>", { <shard key field> : "hashed" } )
 
 ### 概念
 
-- `collecion` 可以是shard的，也可以不是shard的，所以每个数据库会有一个 primary shard，用于存储 un-sharded collections。
-- collection 需要指定一个key作为 `shard key`，key会落在连续的chunks上，chunk 是shard上的单位
+- `collection` 可以是shard的，也可以不是shard的，所以每个数据库会有一个 primary shard，用于存储 un-sharded collections
+- `collection` 需要指定一个key作为 `shard key`，MongoDB 基于 ShardKey 将 Collection 拆分成多个数据子集，每个子集称为一个 Chunk
+- `collection` 的数据按照 ShardKey 划分为 minKey ~ maxKey 的区间，每个 Chunk 有自己负责的一个区间（前闭后开）
+- `chunk` 是基于 collection 的，一个chunk存储的都是同一个 collection 的文档，一个chunk默认64MB
+- `chunk` 会分裂，但不可合并
+- primary shard 除了存储 un-sharded collection，每个集合的第一个 chunk 也会存在上面
 - 后台进程 balancer 负责均衡shard上的 chunks
 
 ### 运维
 
 ```
-# 列出所有开启分片的数据库
-use config
-db.databases.find( { "partitioned": true } )
+# 查看分片列表
+db.getSiblingDB("config").shards.find()
 
-# 列出在配置服务器上的分片列表
-db.adminCommand( { listShards : 1 } )
+# 查看每个数据库是否是 partitioned，以及 primary shard
+db.getSiblingDB("config").databases.find()
+
+# 查看每个 shard 上的 chunk 数量
+db.getSiblingDB("config").chunks.aggregate([
+   { $group: { _id: "$shard", count: { $sum: 1 } } }
+])
+
+# 查看某个 collection 的 chunk 分布
+db.collection.getShardDistribution()
+
+# 查看某个 collection 所有 chunk 列表
+db.getSiblingDB("config").chunks.find({ "ns": "database.collection" })
 
 # 查看集群状态
 sh.status()
