@@ -1,4 +1,5 @@
 ---
 weight: 5
-bookCollapseSection: true
+bookFlatSection: true
+#bookCollapseSection: true
 ---

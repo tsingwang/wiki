@@ -1,6 +1,5 @@
 ---
 weight: 90
-bookCollapseSection: true
 ---
 
 # Vue3
