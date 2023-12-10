@@ -1,8 +1,3 @@
----
-title: Debug
-weight: 1
----
-
 # kubectl debug
 
 背景：应用镜像比较精简，没有可用的命令，或者都没有shell
